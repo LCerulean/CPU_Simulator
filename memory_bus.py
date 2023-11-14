@@ -10,7 +10,7 @@ class Memory:
         self.memory_bus = {}
         self.create_bus()
 
-    # Used in __init__, converts address location to binary in memory bus and sets value to 0
+    # Used in __init__, builds address location (binary) in memory bus and sets value to 0
     def create_bus(self):
         for i in range(bus_max_size):
             self.memory_bus['{0:08b}'.format(i)] = 0
