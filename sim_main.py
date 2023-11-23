@@ -34,7 +34,10 @@ cpu_sim = CPU()
 print("CPU initialized...")
 #fetch instructions and data from files
 instruction_file = cpu_sim.fetch_file_contents("instruction_input.txt")
-data_file = cpu_sim.fetch_file_contents("data_input.txt")
-#decode files, instructions executed as decoded, and data saved to cache
+#decoding instructions, instructions executed as decoded
 cpu_sim.decode_file_contents(instruction_file, 'instruction')
+#fetching data from data file
+data_file = cpu_sim.fetch_file_contents("data_input.txt")
+#decoding file and saving data in cache
 cpu_sim.decode_file_contents(data_file, 'data')
+print("Simulation complete!")

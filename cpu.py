@@ -53,8 +53,8 @@ class CPU:
                 content_piece = content.split(',')
                 # need to be able to send to 'cpu' to parse instructions, or 
                 # to write to memory bus if data...?
-                print("Accessing memory, sending content: (address: {content_piece[0]}, value: {content_piece[1]}) to bus...")
-                self.access_memory(content_piece)
+                print(f"Accessing memory, sending content: {content} to bus...")
+                self.access_memory(content_piece[0], content_piece[1])
         elif data_or_instruction == 'instruction':
             print("File contains instructions, decoding instructions...")
             for content in file_contents:
@@ -70,21 +70,21 @@ class CPU:
     def execute_instruction(self, instruction):
         if instruction[0] == 'ADD':
             print(f"Adding values of register indexes {instruction[2]} and {instruction[3]}, and saving to register index {instruction[1]}...")
-            registry_address = [int(instruction[1][1])]
+            registry_address = int(instruction[1][1])
             registry_value = int(self.registers[int(instruction[2][1])]) + int(self.registers[int(instruction[3][1])])
             print("Initiating registry write back...")
             self.registry_write_back(registry_address, registry_value)
-        if instruction[0] == 'ADDI':
+        elif instruction[0] == 'ADDI':
             print(f"Adding values of register index {instruction[2]} and immediate {instruction[3]}, and saving to register index {instruction[1]}...")
-            registry_address = [int(instruction[1][1])]
+            registry_address = int(instruction[1][1])
             registry_value = int(self.registers[int(instruction[2][1])]) + int(instruction[3])
             print("Initiating registry write back...")
             self.registry_write_back(registry_address, registry_value)
-        if instruction[0] == 'J':
+        elif instruction[0] == 'J':
             print(f"Executing jump command to location {instruction[1]}...")
             jump_location = int(instruction[1])
             self.counter = jump_location
-        if instruction[0] == 'CACHE':
+        elif instruction[0] == 'CACHE':
             cache_action = int(instruction[1])
             if cache_action == 0:
                 print("Turning off cache...")
@@ -95,7 +95,7 @@ class CPU:
             else:
                 print("Flushing cache...Don't forget to wash your hands...")
                 self.cache.flush_cache
-        if instruction[0] == 'HALT':
+        elif instruction[0] == 'HALT':
             print("Executing halt command, pausing...")
             interrupt_halt = 'nope'
             while interrupt_halt != 'continue':
@@ -113,7 +113,7 @@ class CPU:
             print(f"Adding address: {address}, value: {value} to bus...")
             self.bus.add_to_bus(address, value)
             print(f"Bus is delivering data to cache...")
-            self.cache.write_cache(address, self.bus[address])
+            self.cache.write_cache(address, self.bus.search_bus(address))
 
 
     def registry_write_back (self, address, value):
