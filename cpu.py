@@ -62,7 +62,7 @@ class CPU:
                 content_piece = content.split(',')
                 # need to be able to send to 'cpu' to parse instructions, or 
                 # to write to memory bus if data...?
-                print(f"Executing instruction: {content_piece[0]}...")
+                print(f"Executing instruction: {content}...")
                 self.execute_instruction(content_piece)
 
 
@@ -85,7 +85,7 @@ class CPU:
             jump_location = int(instruction[1])
             self.counter = jump_location
         if instruction[0] == 'CACHE':
-            cache_action = instruction[1]
+            cache_action = int(instruction[1])
             if cache_action == 0:
                 print("Turning off cache...")
                 self.cache.cache_on = False

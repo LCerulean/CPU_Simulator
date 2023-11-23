@@ -26,16 +26,15 @@
 
 from cpu import CPU
 
-instruction_source_file = "instruction_input.txt"
-data_source_file = "data_input.txt"
 
 print("Welcome to the CPU simulator!\nThis simulator will take both instructions and data and use them to simulate the CPU instruction cycle.")
 input("Press any key to begin.\n")
 
 cpu_sim = CPU()
+print("CPU initialized...")
 #fetch instructions and data from files
-instruction_file = CPU.fetch_file_contents(instruction_source_file)
-data_file = CPU.fetch_file_contents(data_source_file)
+instruction_file = cpu_sim.fetch_file_contents("instruction_input.txt")
+data_file = cpu_sim.fetch_file_contents("data_input.txt")
 #decode files, instructions executed as decoded, and data saved to cache
 cpu_sim.decode_file_contents(instruction_file, 'instruction')
 cpu_sim.decode_file_contents(data_file, 'data')
