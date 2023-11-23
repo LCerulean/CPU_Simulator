@@ -21,8 +21,10 @@ from bus import Bus
 class CPU:
     def __init__(self):
         self.cache = Cache()
+        self.bus = Bus()
+        self.registers = [0] * 8
         self.counter = 0
-        pass
+
 
     
     def fetch_file_contents(self, file):
@@ -32,12 +34,13 @@ class CPU:
         # instruction's memory address and stores the copy in another
         # register called the Instruction Register (IR).  Once the memory
         # of the instruction is available, the instruction gets decoded.
-        print(f"Fetching {file}...")
+        print(f"Fetching file...")
         open_file = open(file, 'r')
         file_contents = open_file.readlines()
         for i in file_contents:
             file_contents[file_contents.index(i)] = i.strip()
         return file_contents
+
 
     def decode_file_contents(self, file_contents, data_or_instruction):
         # Control Unit deciphers the instruction stored in the IR.
@@ -52,7 +55,6 @@ class CPU:
                 # to write to memory bus if data...?
                 print("Accessing memory, sending content: (address: {content_piece[0]}, value: {content_piece[1]}) to bus...")
                 self.access_memory(content_piece)
-                pass
         elif data_or_instruction == 'instruction':
             print("File contains instructions, decoding instructions...")
             for content in file_contents:
@@ -62,21 +64,27 @@ class CPU:
                 # to write to memory bus if data...?
                 print(f"Executing instruction: {content_piece[0]}...")
                 self.execute_instruction(content_piece)
-                pass
 
-    # I think needs to happen IN the decode_file_contents method
+
+    # Carried out inside decode function, since each instruction would be exectuted as decoded.
     def execute_instruction(self, instruction):
-        # Instruction is sent to the correct part of the ALU to be
-        # processed and completed
-        if instruction[0] == "ADD":
-            self.execute_add(instruction[1], instruction[2], instruction[3])
-        if instruction[0] == "ADDI":
-            self.execute_addi(instruction[1], instruction[2], instruction[3])
-        if instruction[0] == "J":
+        if instruction[0] == 'ADD':
+            print(f"Adding values of register indexes {instruction[2]} and {instruction[3]}, and saving to register index {instruction[1]}...")
+            registry_address = [int(instruction[1][1])]
+            registry_value = int(self.registers[int(instruction[2][1])]) + int(self.registers[int(instruction[3][1])])
+            print("Initiating registry write back...")
+            self.registry_write_back(registry_address, registry_value)
+        if instruction[0] == 'ADDI':
+            print(f"Adding values of register index {instruction[2]} and immediate {instruction[3]}, and saving to register index {instruction[1]}...")
+            registry_address = [int(instruction[1][1])]
+            registry_value = int(self.registers[int(instruction[2][1])]) + int(instruction[3])
+            print("Initiating registry write back...")
+            self.registry_write_back(registry_address, registry_value)
+        if instruction[0] == 'J':
             print(f"Executing jump command to location {instruction[1]}...")
             jump_location = int(instruction[1])
             self.counter = jump_location
-        if instruction[0] == "CACHE":
+        if instruction[0] == 'CACHE':
             cache_action = instruction[1]
             if cache_action == 0:
                 print("Turning off cache...")
@@ -87,25 +95,33 @@ class CPU:
             else:
                 print("Flushing cache...Don't forget to wash your hands...")
                 self.cache.flush_cache
-        #not sure how to write this next part at this point
-        if instruction == 'impacts data':
-            self.registry_write_back(instruction)
-        pass
+        if instruction[0] == 'HALT':
+            print("Executing halt command, pausing...")
+            interrupt_halt = 'nope'
+            while interrupt_halt != 'continue':
+                interrupt_halt = input(f"If you would like to interrupt the halt command, type 'continue'.\n")
+        else:
+            print(f"Encountered error while executing, {instruction[0]} is not a known instruction.")
 
-    # I believe, if I understand correctly, will access cache before
-    # main memory.
-    def access_memory (self, something):
+
+    def access_memory (self, address, value = None):
         # Retrieve any required data necessary to execute an instruction.
         # This stage only occures if the instruction requires data from memory
-        Bus.search_bus(address)
-        pass
+        # For this example it is being used to return data from data file.
+        check_bus = self.bus.search_bus(address)
+        if check_bus != None:
+            print(f"Adding address: {address}, value: {value} to bus...")
+            self.bus.add_to_bus(address, value)
+            print(f"Bus is delivering data to cache...")
+            self.cache.write_cache(address, self.bus[address])
 
-    def registry_write_back (self, something):
+
+    def registry_write_back (self, address, value):
         # This stage only used if the execution of the instruction impacts data.
         # As each instruction is executed data is stored to one of the 
         # registers in the CPU.
         # This stage is also used if existing data is changed or updated
-        pass
+        self.registers[address] = value
 
 
 
