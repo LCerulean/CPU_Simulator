@@ -1,7 +1,7 @@
 from cpu import CPU
 
 
-print("Welcome to the CPU simulator!\nThis simulator will take both instructions and data and use them to simulate the CPU instruction cycle.")
+print("Welcome to the CPU simulator!\nThis simulator will take both instructions and data and use them to simulate the stages in the CPU instruction cycle.")
 input("Press any key to begin.\n")
 
 cpu_sim = CPU()

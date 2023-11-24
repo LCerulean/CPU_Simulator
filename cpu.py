@@ -1,4 +1,4 @@
-# CPU instruction cycle:
+# CPU instruction cycle stages:
     # 1: fetch
     # 2: decode
     # 3: execute
