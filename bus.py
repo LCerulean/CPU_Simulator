@@ -1,7 +1,6 @@
 #Bus sends control signals and data between processor and other components
-#Needed to help CPU communicate with memory (cashe)
+#In actual CPU is needed to help CPU communicate with memory
 
-#represents number of memory addresses
 bus_max_size = 64
 
 class Bus:
@@ -15,7 +14,7 @@ class Bus:
         for i in range(bus_max_size):
             self.memory_bus[f'{i:08b}'] = 0
 
-    # Returns value of inputted address if it exists
+    # Returns value of input address if it exists
     def search_bus(self, address):
         if self.memory_bus.get(address) is not None:
             return self.memory_bus.get(address)

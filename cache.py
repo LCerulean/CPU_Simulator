@@ -1,5 +1,5 @@
 #Cache temporarily stores date and located directly on the processor
-#MIPS Cores have separate instruction and data caches
+
 from collections import deque
 
 cache_size = 8
